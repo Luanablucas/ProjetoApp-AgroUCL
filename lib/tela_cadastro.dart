@@ -31,7 +31,7 @@ class _CadastroPageState extends State<CadastroPage> {
   }
 
   void _validateSenha(String value) {
-    if (value.length < 6 || !value.contains(RegExp(r'[0-9]{6}'))) {
+    if (value.length < 6 || !value.contains(RegExp(r'[0-9]{6}'))) { //Defino o tamanho do campo e regras adicionais
       setState(() {
         _senhaError = true;
       });
@@ -82,11 +82,12 @@ class _CadastroPageState extends State<CadastroPage> {
 
       print('Usuário cadastrado com sucesso: ${userCredential.user!.uid}');
     } catch (e) {
-      // Tratar erros de cadastro
+      // Pop-up de erro
       print('Erro ao cadastrar usuário: $e');
     }
   }
 
+  // Tela de cadastro front
   @override
   Widget build(BuildContext context) {
     return Scaffold(

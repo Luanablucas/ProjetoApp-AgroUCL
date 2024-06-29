@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:projeto_agrouclapp/tela_acoes.dart';
 import 'package:projeto_agrouclapp/tela_configuracoes.dart';
 import 'package:projeto_agrouclapp/tela_historico.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -142,12 +140,18 @@ class _HomePageState extends State<HomePage> {
                       CircleAvatar(
                         radius: 52,
                         backgroundColor: Colors.white,
-                        child: Text(
-                          _user.displayName != null ? _user.displayName![0] : '',
+                        child: _user.displayName != null && _user.displayName!.isNotEmpty
+                            ? Text(
+                          _user.displayName![0],
                           style: const TextStyle(fontSize: 36),
+                        )
+                            : const Icon(
+                          Icons.person,
+                          size: 52,
+                          color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 1),
                       Text(
                         _user.displayName ?? '',
                         style: const TextStyle(
@@ -183,16 +187,6 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HistoricoPage()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.star),
-                title: const Text('Ações'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AcoesPage()),
                   );
                 },
               ),
@@ -239,12 +233,16 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.thermostat_outlined, color: Colors.green),
-                          SizedBox(width: 8),
-                          Text(
+                          Image.asset(
+                            'assets/images/temperatura.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
                             'Temperatura atual:',
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
                           ),
@@ -263,107 +261,119 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
-              width: 280,
-              height: 100,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                    Icon(Icons.local_florist, color: Colors.green),
-                        SizedBox(width: 8),
-                        Text(
-                          'Cálcio:',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _calcio,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  ],
+                width: 280,
+                height: 100,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/calcio.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'Cálcio:',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _calcio,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             ),
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
-              width: 280,
-              height: 100,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.water_outlined, color: Colors.green),
-                        SizedBox(width: 8),
-                        Text(
-                          'Evapotranspiração:',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _etp,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  ],
+                width: 280,
+                height: 100,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/orvalho.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'Evapotranspiração:',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _etp,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             ),
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
-              width: 280,
-              height: 100,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.opacity_outlined, color: Colors.green),
-                        SizedBox(width: 8),
-                        Text(
-                          'Umidade:',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _umidade,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  ],
+                width: 280,
+                height: 100,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/umidade.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Umidade:',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _umidade,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             ),
           ],
         ),

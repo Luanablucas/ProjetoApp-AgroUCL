@@ -76,7 +76,7 @@ class EsqueceuSenhaPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: const Color(0xFF5EAF53), // Texto branco
+                  foregroundColor: Colors.white, backgroundColor: const Color(0xFF5EAF53),
                 ),
                 child: const Text('OK'),
               ),
@@ -105,7 +105,7 @@ class EsqueceuSenhaPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Color(0xFF5EAF53), // Texto branco
+                  foregroundColor: Colors.white, backgroundColor: Color(0xFF5EAF53),
                 ),
                 child: const Text('OK'),
               ),

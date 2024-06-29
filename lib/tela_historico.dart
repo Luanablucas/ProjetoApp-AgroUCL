@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_agrouclapp/tela_acoes.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'analytics_provider.dart'; // Importe o seu AnalyticsProvider
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projeto_agrouclapp/tela_configuracoes.dart';
 import 'package:projeto_agrouclapp/tela_inicial.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HistoricoPage extends StatefulWidget {
-  const HistoricoPage({super.key});
+  const HistoricoPage({Key? key}) : super(key: key);
 
   @override
   _HistoricoPageState createState() => _HistoricoPageState();
 }
 
 class _HistoricoPageState extends State<HistoricoPage> {
-  String _selectedOption = 'Selecione o histórico';
+  late AnalyticsProvider analyticsProvider;
+  late User _user;
 
   @override
-  Widget build(BuildContext context) {
-    final User? user = FirebaseAuth.instance.currentUser;
+  void initState() {
+    super.initState();
+    analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
+    analyticsProvider.initializeDatabase();
+    _getUserData();
+  }
 
+  Future<void> _getUserData() async {
+    _user = FirebaseAuth.instance.currentUser!;
+    setState(() {});
+  }
+
+  // drawer - barra de navegações lateral
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Histórico'),
@@ -39,21 +54,27 @@ class _HistoricoPageState extends State<HistoricoPage> {
                       CircleAvatar(
                         radius: 52,
                         backgroundColor: Colors.white,
-                        child: Text(
-                          user?.displayName != null ? user!.displayName![0] : '',
+                        child: _user.displayName != null && _user.displayName!.isNotEmpty
+                            ? Text(
+                          _user.displayName![0],
                           style: const TextStyle(fontSize: 36),
+                        )
+                            : const Icon(
+                          Icons.person,
+                          size: 52,
+                          color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 1),
                       Text(
-                        user?.displayName ?? '',
+                        _user.displayName ?? '',
                         style: const TextStyle(
                           fontSize: 28,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        user?.email ?? '',
+                        _user.email ?? '',
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white,
@@ -67,9 +88,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
                 leading: const Icon(Icons.home),
                 title: const Text('Home'),
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => const HomePage()),
                   );
                 },
               ),
@@ -77,29 +98,16 @@ class _HistoricoPageState extends State<HistoricoPage> {
                 leading: const Icon(Icons.history),
                 title: const Text('Histórico'),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HistoricoPage()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.star),
-                title: const Text('Ações'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AcoesPage()),
-                  );
+                  Navigator.pop(context); // Fecha o drawer
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.settings),
                 title: const Text('Configurações'),
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => ConfiguracoesPage()),
+                    MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
                   );
                 },
               ),
@@ -107,49 +115,57 @@ class _HistoricoPageState extends State<HistoricoPage> {
           ),
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.green, width: 2.0),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: DropdownButton<String>(
-                value: _selectedOption,
-                items: <String>[
-                  'Selecione o histórico',
-                  'ETP',
-                  'Temperatura'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedOption = newValue!;
-                    if (_selectedOption == 'ETP') {
-                      Navigator.pushNamed(context, '/historico_etp');
-                    } else if (_selectedOption == 'Temperatura') {
-                      Navigator.pushNamed(context, '/historico_temperatura');
-                    }
-                  });
-                },
-              ),
-            ),
-            const SizedBox(height: 20),
-            Image.asset(
-              'assets/historico.png',
-              width: 300,
-              height: 300,
-            ),
-          ],
-        ),
+      body: Consumer<AnalyticsProvider>(
+        builder: (context, analyticsProvider, child) {
+          return ListView(
+            children: analyticsProvider.allData.entries.map((entry) {
+              String sensorType = entry.key;
+              List<SensorData> sensorDataList = entry.value;
+              return buildSensorSection(sensorType, sensorDataList);
+            }).toList(),
+          );
+        },
       ),
+    );
+  }
+
+  Widget buildSensorSection(String sensorType, List<SensorData> sensorDataList) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            sensorType,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: sensorDataList.length,
+          itemBuilder: (context, index) {
+            var sensorData = sensorDataList[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${sensorData.value}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    DateFormat('dd/MM/yyyy HH:mm:ss').format(sensorData.timestampLocal), // Histórico
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

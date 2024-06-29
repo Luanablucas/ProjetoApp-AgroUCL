@@ -1,5 +1,5 @@
 name: projeto_agrouclapp
-description: "A new Flutter project."
+description: Agro UCL application
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -40,6 +40,10 @@ dependencies:
   cloud_firestore: ^5.0.1
   firebase_database: ^11.0.1
   intl: ^0.19.0
+  flutter_local_notifications: ^17.1.2
+  provider: ^5.0.0
+  shared_preferences: ^2.0.12
+
 
 dev_dependencies:
   flutter_test:
@@ -50,7 +54,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
@@ -58,6 +62,12 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/blackberry.png
+    - assets/images/calcio.png
+    - assets/images/fazenda-inteligente.png
+    - assets/images/orvalho.png
+    - assets/images/temperatura.png
+    - assets/images/umidade.png
+
 
 
 
